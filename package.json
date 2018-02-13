@@ -1,0 +1,30 @@
+{
+  "name": "api_xzxxy",
+  "version": "0.0.1",
+  "description": "Backend application, handles database-ing and authentication for the application frontend",
+  "main": "xzxxy.js",
+  "scripts": {
+    "test": "xo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nexylmao/XZXXY-backend.git"
+  },
+  "keywords": [
+    "backend",
+    "fusion-replace",
+    "nodejs",
+    "hashauth"
+  ],
+  "author": "nexylmao (Nenad Vuletić)",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/nexylmao/XZXXY-backend/issues"
+  },
+  "homepage": "https://github.com/nexylmao/XZXXY-backend#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "mongodb": "^3.0.2"
+  }
+}
