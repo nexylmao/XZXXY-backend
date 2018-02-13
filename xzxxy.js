@@ -1,7 +1,8 @@
 const MongoDB = require('mongodb').MongoClient;
-const Application = require('express').Express;
-const AuthenticationRouter = require('express').Router;
-const DatabaseRouter = require('express').Router;
+const Express = require('express');
+const Aplication = Express();
+var AuthenticationRouter = Express.Router();
+var DatabaseRouter = Express.Router();
 const Parser = require('body-parser');
 const PackageFile = require('./package.json');
 
