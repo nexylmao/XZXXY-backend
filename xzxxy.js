@@ -9,7 +9,7 @@ const Parser = require('body-parser');
 
 const Keyword = process.env.KEYWORD;
 var CalculatedKeyWord;
-const ListenPort = process.env.Port || 3000;
+const ListenPort = process.env.PORT || 3000;
 const DatabasePath = process.env.MONGODB_PATH;
 // DBPATH set in enviroment variables
 const AuthenticationDatabaseName = 'xzxxy-auth';
