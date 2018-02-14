@@ -215,7 +215,7 @@ Aplication.listen(ListenPort, '0.0.0.0', err => {
     if (err) {
         throw err;
     }
-    CalculatedKeyWord = Math.floor((Math.random() * 100) + 1) + Keyword + Math.floor((Math.random() * 100) + 1);
+    CalculatedKeyWord = Math.floor((Math.random() * 100000) + 1) + Keyword + Math.floor((Math.random() * 100000) + 1);
     console.log('This session has the keyword set to : ' + CalculatedKeyWord);
     console.log('Server up and started on port ' + ListenPort);
 });
