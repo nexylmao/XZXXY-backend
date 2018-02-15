@@ -55,8 +55,6 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
             if(data.indexOf(ASSHASH) != -1)
             {
                 res.send(CalculatedKeyWord);
-                CalculatedKeyWord = Math.floor((Math.random() * 100000) + 1) + Keyword + Math.floor((Math.random() * 100000) + 1);
-                console.log('This session has the keyword set to : ' + CalculatedKeyWord);
             }
             else
             {
@@ -91,6 +89,8 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
             {
                 res.send('Registration denied!');
             }
+            CalculatedKeyWord = Math.floor((Math.random() * 100000000) + 1) + Keyword + Math.floor((Math.random() * 100000000) + 1);
+            console.log('This session has the keyword set to : ' + CalculatedKeyWord);
         });
         client.close();
     });
@@ -218,7 +218,7 @@ Aplication.listen(ListenPort, '0.0.0.0', err => {
     if (err) {
         throw err;
     }
-    CalculatedKeyWord = Math.floor((Math.random() * 100000) + 1) + Keyword + Math.floor((Math.random() * 100000) + 1);
+    CalculatedKeyWord = Math.floor((Math.random() * 100000000) + 1) + Keyword + Math.floor((Math.random() * 100000000) + 1);
     console.log('This session has the keyword set to : ' + CalculatedKeyWord);
     console.log('Server up and started on port ' + ListenPort);
 });
