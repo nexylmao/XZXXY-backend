@@ -25,6 +25,7 @@ Aplication.use(Parser.json());
 // AUTH ROUTER
 AuthenticationRouter.get('/WriteKeyword', (req, res, next) => {
     console.log('This session has the keyword set to : ' + CalculatedKeyWord);
+    res.send('Wrote the keyword to server console!');
 });
 AuthenticationRouter.post('/Hash', (req, res, next) => {
     authenticationClient.connect(MONGODB_PATH, (err, client) => {
