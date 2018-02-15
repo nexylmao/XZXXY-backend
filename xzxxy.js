@@ -23,7 +23,7 @@ Aplication.use(Parser.urlencoded({
 Aplication.use(Parser.json());
 
 // AUTH ROUTER
-AuthenticationRouter.post('/WriteKeyword', (req, res, next) => {
+AuthenticationRouter.get('/WriteKeyword', (req, res, next) => {
     console.log('This session has the keyword set to : ' + CalculatedKeyWord);
 });
 AuthenticationRouter.post('/Hash', (req, res, next) => {
@@ -54,6 +54,8 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
             if(data.indexOf(ASSHASH) != -1)
             {
                 res.send(CalculatedKeyWord);
+                CalculatedKeyWord = Math.floor((Math.random() * 100000) + 1) + Keyword + Math.floor((Math.random() * 100000) + 1);
+                console.log('This session has the keyword set to : ' + CalculatedKeyWord);
             }
             else
             {
