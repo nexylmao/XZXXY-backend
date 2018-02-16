@@ -28,7 +28,7 @@ AuthenticationRouter.get('/WriteKeyword', (req, res, next) => {
     res.send('Wrote the keyword to server console!');
 });
 AuthenticationRouter.post('/Hash', (req, res, next) => {
-    authenticationClient.connect(MONGODB_PATH, (err, client) => {
+    authenticationClient.connect(DatabasePath, (err, client) => {
         Assert.ifError(err);
         var DB = client.db(AuthenticationDatabaseName);
         var collection = DB.collection('allowedhashes');
@@ -46,7 +46,7 @@ AuthenticationRouter.post('/Hash', (req, res, next) => {
     });
 });
 AuthenticationRouter.post('/FirstStep', (req, res, next) => {
-    authenticationClient.connect(MONGODB_PATH, (err, client) => {
+    authenticationClient.connect(DatabasePath, (err, client) => {
         Assert.ifError(err);
         var DB = client.db(AuthenticationDatabaseName);
         var collection = DB.collection('allowedhashes');
@@ -65,7 +65,7 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
     });
 });
 AuthenticationRouter.post('/SecondStep', (req, res, next) => {
-    authenticationClient.connect(MONGODB_PATH, (err, client) => {
+    authenticationClient.connect(DatabasePath, (err, client) => {
         Assert.ifError(err);
         var DB = client.db(AuthenticationDatabaseName);
         var collection;
