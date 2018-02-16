@@ -54,11 +54,14 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
         // add first check to see if is already registered
         collection.find({},{_id:0}).toArray((err,data) => {
             console.log(data);
-            var ASSHASH = req.body.ASSHASH;
             var y = false;
             for(var i = 0; i < data.length; i++)
             {
-                if(data[i] == ASSHASH)
+                console.log('compare : ');
+                console.log(data[i]);
+                console.log('and');
+                console.log(req.body.ASSHASH);
+                if(data[i] == req.body.ASSHASH)
                 {
                     y = true;
                 }
@@ -96,7 +99,7 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
             var y = false;
             for(var i = 0; i < data.length; i++)
             {
-                if(data[i] == ASSHASH)
+                if(data[i] == req.body.ASSHASH)
                 {
                     y = true;
                 }
