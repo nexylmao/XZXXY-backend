@@ -10,11 +10,10 @@ const Parser = require('body-parser');
 const Keyword = process.env.KEYWORD;
 var CalculatedKeyWord;
 const ListenPort = process.env.PORT || 3000;
-const DatabasePath = process.env.MONGODB_PATH;
 // DBPATH set in enviroment variables
-const AuthenticationDatabaseName = 'xzxxy-auth';
+const AuthenticationDatabasePath = process.env.MONGODB_PATH_AUTH;
 // collections : users, admins, allowedhashes
-const DatabaseName = 'xzxxy-database';
+const DatabasePath = process.env.MONGODB_PATH_DB;
 // collections - for every class there's one
 
 Aplication.use(Parser.urlencoded({
@@ -28,9 +27,8 @@ AuthenticationRouter.get('/WriteKeyword', (req, res, next) => {
     res.send('Wrote the keyword to server console!');
 });
 AuthenticationRouter.post('/Hash', (req, res, next) => {
-    authenticationClient.connect(DatabasePath, (err, client) => {
+    authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
-        var DB = client.db(AuthenticationDatabaseName);
         var collection = DB.collection('allowedhashes');
         if(req.body.KEYWORD == CalculatedKeyWord)
         {
@@ -46,9 +44,8 @@ AuthenticationRouter.post('/Hash', (req, res, next) => {
     });
 });
 AuthenticationRouter.post('/FirstStep', (req, res, next) => {
-    authenticationClient.connect(DatabasePath, (err, client) => {
+    authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
-        var DB = client.db(AuthenticationDatabaseName);
         var collection = DB.collection('allowedhashes');
         console.log(req.body);
         collection.find({},{_id:0}).toArray((err,data) => {
@@ -110,9 +107,8 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
     });
 });
 AuthenticationRouter.post('/SecondStep', (req, res, next) => {
-    authenticationClient.connect(DatabasePath, (err, client) => {
+    authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
-        var DB = client.db(AuthenticationDatabaseName);
         var collection;
         if(req.body.ADMIN == true)
         {
@@ -150,9 +146,8 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
 });
 // DATABASE ROUTER
 DatabaseRouter.get('/:userid/:collection', (req, res, next) => {
-    authenticationClient.connect(DatabasePath, (err, client) => {
+    authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
-        var DB = client.db(AuthenticationDatabaseName);
         var exists = false;
         var acollection = DB.collection('admins');
         var ucollection = DB.collection('users');
@@ -173,7 +168,6 @@ DatabaseRouter.get('/:userid/:collection', (req, res, next) => {
         {
             databaseClient.connect(DatabasePath, (err, client) => {
                 Assert.ifError(err);
-                var DB = client.db(DatabaseName);
                 var collection = DB.collection(req.params.collection);
                 collection.find({},{_id:0}).toArray((err, data) => {
                     res.send(data);
@@ -185,9 +179,8 @@ DatabaseRouter.get('/:userid/:collection', (req, res, next) => {
 });
 
 DatabaseRouter.post('/:userid/collection', (req, res, next) => {
-    authenticationClient.connect(DatabasePath, (err, client) => {
+    authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
-        var DB = client.db(AuthenticationDatabaseName);
         var exists = false;
         var acollection = DB.collection('admins');
         var ucollection = DB.collection('users');
@@ -208,7 +201,6 @@ DatabaseRouter.post('/:userid/collection', (req, res, next) => {
         {
             databaseClient.connect(DatabasePath, (err, client) => {
                 Assert.equal(null, err);
-                var DB = client.db(DatabaseName);
                 var collection = DB.collection(req.params.collection);
                 collection.insert(req.body, (err, data) => {
                     res.send('Object successfully saved to database (' + req.params.collection + ')');
@@ -220,9 +212,8 @@ DatabaseRouter.post('/:userid/collection', (req, res, next) => {
 });
 
 DatabaseRouter.delete('/:userid/collection', (req, res, next) => {
-    authenticationClient.connect(DatabasePath, (err, client) => {
+    authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
-        var DB = client.db(AuthenticationDatabaseName);
         var exists = false;
         var acollection = DB.collection('admins');
         var ucollection = DB.collection('users');
@@ -243,7 +234,6 @@ DatabaseRouter.delete('/:userid/collection', (req, res, next) => {
         {
             databaseClient.connect(DatabasePath, (err, client) => {
                 Assert.equal(null, err);
-                var DB = client.db(DatabaseName);
                 var collection = DB.collection(req.params.collection);
                 collection.remove({}, (err, data) => {
                     res.send('Object successfully deleted everything in database (' + req.params.collection + ')');
