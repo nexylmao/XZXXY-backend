@@ -51,7 +51,6 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
         var DB = client.db(AuthenticationDatabaseName);
         var collection = DB.collection('allowedhashes');
         console.log(req.body);
-        // add first check to see if is already registered
         collection.find({},{_id:0}).toArray((err,data) => {
             var y = false;
             for(var i = 0; i < data.length; i++)
@@ -63,7 +62,37 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
             }
             if(y)
             {
-                res.send(CalculatedKeyWord);
+                var ucollection = DB.collection('users');
+                var acollection = DB.collection('admins');
+                var exists = false;
+                ucollection.find({},{_id:0}).toArray((err,data) => {
+                    console.log(data);
+                    for(var i = 0; i < data.length; i++)
+                    {
+                        if(data[i].user == req.body.APPHASH)
+                        {
+                            exists = true;
+                        }   
+                    }
+                });
+                acollection.find({},{_id:0}).toArray((err,data) => {
+                    console.log(data);
+                    for(var i = 0; i < data.length; i++)
+                    {
+                        if(data[i].user == req.body.APPHASH)
+                        {
+                            exists = true;
+                        }  
+                    }
+                });
+                if(exists)
+                {
+                    res.send("You already exist as a user!");
+                }
+                else
+                {
+                    res.send(CalculatedKeyWord);
+                }
             }
             else
             {
