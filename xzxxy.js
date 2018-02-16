@@ -35,7 +35,7 @@ AuthenticationRouter.post('/Hash', (req, res, next) => {
         console.log(req.body);
         if(req.body.KEYWORD == CalculatedKeyWord)
         {
-            collection.update({name:"hashesArray"},{$push:{hashes:req.body.ASSHASH}}, (err,data) => {
+            collection.findOneAndUpdate({name:"hashesArray"},{$push:{hashes:req.body.ASSHASH}}, (err,data) => {
                 res.send('Successfully added the hash to database!');
             });
         }
