@@ -80,13 +80,13 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
         var collection;
         if(req.body.ADMIN == true)
         {
-            collection = db.collection('admins');
+            collection = DB.collection('admins');
         }
         else
         {
-            collection = db.collection('users');
+            collection = DB.collection('users');
         }
-        var ahcollection = db.collection('allowedhashes');
+        var ahcollection = DB.collection('allowedhashes');
         ahcollection.find({},{_id:0}).toArray((err,data) => {
             var y = false;
             for(var i = 0; i < data.length; i++)
