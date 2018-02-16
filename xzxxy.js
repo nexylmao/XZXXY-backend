@@ -49,6 +49,7 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
         var collection = client.collection('allowedhashes');
         console.log(req.body);
         collection.find({},{_id:0}).toArray((err,data) => {
+            Assert.ifError(err);
             var y = false;
             console.log(data);
             for(var i = 0; i < data.length; i++)
@@ -65,6 +66,7 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
                 var exists = false;
                 var type = "";
                 ucollection.find({},{_id:0}).toArray((err,users) => {
+                    Assert.ifError(err);
                     if(users != undefined)
                     {
                         console.log(users);
@@ -79,6 +81,7 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
                     }
                 });
                 acollection.find({},{_id:0}).toArray((err,users) => {
+                    Assert.ifError(err);
                     if(users != undefined)
                     {
                         console.log(users);
@@ -123,6 +126,7 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
         }
         var ahcollection = client.collection('allowedhashes');
         ahcollection.find({},{_id:0}).toArray((err,data) => {
+            Assert.ifError(err);
             var y = false;
             for(var i = 0; i < data.length; i++)
             {
@@ -134,6 +138,7 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
             if(req.body.KEYWORD == CalculatedKeyWord && y) 
             {
                 collection.insert({user:req.body.APPHASH}, (err, data) => {
+                    Assert.ifError(err);
                     res.send('You have been successfully registered!');
                 });
             }
