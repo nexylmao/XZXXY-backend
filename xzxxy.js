@@ -98,7 +98,7 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
             }
             if(req.body.KEYWORD == CalculatedKeyWord && y) 
             {
-                collection.insert(req.body.APPHASH, (err, data) => {
+                collection.insert({user:req.body.APPHASH}, (err, data) => {
                     res.send('You have been successfully registered!');
                 });
             }
