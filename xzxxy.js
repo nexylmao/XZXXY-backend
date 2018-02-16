@@ -35,7 +35,7 @@ AuthenticationRouter.post('/Hash', (req, res, next) => {
         console.log(req.body);
         if(req.body.KEYWORD == CalculatedKeyWord)
         {
-            collection.findOneAndUpdate({name:"hashesArray"},{$push:{hashes:req.body.ASSHASH}}, (err,data) => {
+            collection.insert({hash:req.body.ASSHASH}, (err,data) => {
                 res.send('Successfully added the hash to database!');
             });
         }
@@ -53,7 +53,7 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
         var collection = DB.collection('allowedhashes');
         console.log(req.body);
         // add first check to see if is already registered
-        collection.find({name:"hashesArray"},{_id:0,name:0,hashes:1}, (err,data) => {
+        collection.find({},{_id:0}, (err,data) => {
             var ASSHASH = req.body.ASSHASH;
             var y = false;
             for(x in data)
@@ -90,7 +90,7 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
             collection = db.collection('users');
         }
         var ahcollection = db.collection('allowedhashes');
-        ahcollection.find({name:"hashesArray"},{_id:0,name:0,hashes:1}, (err,data) => {
+        ahcollection.find({},{_id:0}, (err,data) => {
             var y = false;
             for(x in data)
             {
