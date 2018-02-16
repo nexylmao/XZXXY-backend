@@ -63,6 +63,7 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
                 var ucollection = client.collection('users');
                 var acollection = client.collection('admins');
                 var exists = false;
+                var type = "";
                 ucollection.find({},{_id:0}).toArray((err,users) => {
                     if(users != undefined)
                     {
@@ -72,6 +73,7 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
                             if(users[i].user == req.body.APPHASH)
                             {
                                 exists = true;
+                                type = "user";
                             }   
                         }
                     }
@@ -85,13 +87,14 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
                             if(users[i].user == req.body.APPHASH)
                             {
                                 exists = true;
+                                type = "admin";
                             }  
                         }
                     }
                 });
                 if(exists)
                 {
-                    res.send("You already exist as a user!");
+                    res.send("You already exist as a " + type + "!");
                 }
                 else
                 {
@@ -130,8 +133,6 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
             }
             if(req.body.KEYWORD == CalculatedKeyWord && y) 
             {
-                console.log({user:req.body.APPHASH});
-                console.log(collection);
                 collection.insert({user:req.body.APPHASH}, (err, data) => {
                     res.send('You have been successfully registered!');
                 });
