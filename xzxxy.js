@@ -54,6 +54,7 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
         console.log(req.body);
         // add first check to see if is already registered
         collection.find({},{_id:0}, (err,data) => {
+            console.log(data);
             var ASSHASH = req.body.ASSHASH;
             var y = false;
             for(x in data)
@@ -91,6 +92,7 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
         }
         var ahcollection = db.collection('allowedhashes');
         ahcollection.find({},{_id:0}, (err,data) => {
+            console.log(data);
             var y = false;
             for(x in data)
             {
