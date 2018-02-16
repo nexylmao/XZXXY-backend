@@ -53,6 +53,7 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
         console.log(req.body);
         collection.find({},{_id:0}).toArray((err,data) => {
             var y = false;
+            console.log(data);
             for(var i = 0; i < data.length; i++)
             {
                 if(data[i].hash == req.body.ASSHASH)
