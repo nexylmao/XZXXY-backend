@@ -65,24 +65,30 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
                 var ucollection = DB.collection('users');
                 var acollection = DB.collection('admins');
                 var exists = false;
-                ucollection.find({},{_id:0}).toArray((err,data) => {
-                    console.log(data);
-                    for(var i = 0; i < data.length; i++)
+                ucollection.find({},{_id:0}).toArray((err,users) => {
+                    if(users != undefined)
                     {
-                        if(data[i].user == req.body.APPHASH)
+                        console.log(users);
+                        for(var i = 0; i < users.length; i++)
                         {
-                            exists = true;
-                        }   
+                            if(users[i].user == req.body.APPHASH)
+                            {
+                                exists = true;
+                            }   
+                        }
                     }
                 });
-                acollection.find({},{_id:0}).toArray((err,data) => {
-                    console.log(data);
-                    for(var i = 0; i < data.length; i++)
+                acollection.find({},{_id:0}).toArray((err,users) => {
+                    if(users != undefined)
                     {
-                        if(data[i].user == req.body.APPHASH)
+                        console.log(users);
+                        for(var i = 0; i < users.length; i++)
                         {
-                            exists = true;
-                        }  
+                            if(users[i].user == req.body.APPHASH)
+                            {
+                                exists = true;
+                            }  
+                        }
                     }
                 });
                 if(exists)
