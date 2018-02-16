@@ -131,6 +131,7 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
             if(req.body.KEYWORD == CalculatedKeyWord && y) 
             {
                 console.log({user:req.body.APPHASH});
+                console.log(collection);
                 collection.insert({user:req.body.APPHASH}, (err, data) => {
                     res.send('You have been successfully registered!');
                 });
