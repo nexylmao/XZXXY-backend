@@ -53,20 +53,14 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
         console.log(req.body);
         // add first check to see if is already registered
         collection.find({},{_id:0}).toArray((err,data) => {
-            console.log(data);
             var y = false;
             for(var i = 0; i < data.length; i++)
             {
-                console.log('compare : ');
-                console.log(data[i]);
-                console.log('and');
-                console.log(req.body.ASSHASH);
-                if(data[i] == req.body.ASSHASH)
+                if(data[i].hash == req.body.ASSHASH)
                 {
                     y = true;
                 }
             }
-            console.log(y);
             if(y)
             {
                 res.send(CalculatedKeyWord);
@@ -84,7 +78,6 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
         Assert.ifError(err);
         var DB = client.db(AuthenticationDatabaseName);
         var collection;
-        console.log(req.body);
         if(req.body.ADMIN == true)
         {
             collection = db.collection('admins');
@@ -95,16 +88,14 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
         }
         var ahcollection = db.collection('allowedhashes');
         ahcollection.find({},{_id:0}).toArray((err,data) => {
-            console.log(data);
             var y = false;
             for(var i = 0; i < data.length; i++)
             {
-                if(data[i] == req.body.ASSHASH)
+                if(data[i].hash == req.body.ASSHASH)
                 {
                     y = true;
                 }
             }
-            console.log(y);
             if(req.body.KEYWORD == CalculatedKeyWord && y) 
             {
                 collection.insert(req.body.APPHASH, (err, data) => {
