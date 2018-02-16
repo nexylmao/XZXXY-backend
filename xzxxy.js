@@ -35,7 +35,7 @@ AuthenticationRouter.post('/Hash', (req, res, next) => {
         console.log(req.body);
         if(req.body.KEYWORD == CalculatedKeyWord)
         {
-            collection.insert(req.body.ASSHASH, (err,data) => {
+            collection.update({},{$push:req.body.KEYWORD}, (err,data) => {
                 res.send('Successfully added the hash to database!');
             });
         }
@@ -52,6 +52,7 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
         var DB = client.db(AuthenticationDatabaseName);
         var collection = DB.collection('allowedhashes');
         console.log(req.body);
+        // add first check to see if is already registered
         collection.find({},{_id:0}).toArray((err,data) => {
             var ASSHASH = req.body.ASSHASH;
             if(data.indexOf(ASSHASH) != -1)
