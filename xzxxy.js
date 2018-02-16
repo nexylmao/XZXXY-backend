@@ -15,6 +15,10 @@ const AuthenticationDatabasePath = process.env.MONGODB_PATH_AUTH;
 // collections : users, admins, allowedhashes
 const DatabasePath = process.env.MONGODB_PATH_DB;
 // collections - for every class there's one
+var options = {
+    server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
+    replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
+  };
 
 Aplication.use(Parser.urlencoded({
     extended: true
@@ -27,7 +31,7 @@ AuthenticationRouter.get('/WriteKeyword', (req, res, next) => {
     res.send('Wrote the keyword to server console!');
 });
 AuthenticationRouter.post('/Hash', (req, res, next) => {
-    authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
+    authenticationClient.connect(AuthenticationDatabasePath, options , (err, client) => {
         Assert.ifError(err);
         var collection = client.collection('allowedhashes');
         if(req.body.KEYWORD == CalculatedKeyWord)
