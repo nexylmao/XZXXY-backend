@@ -32,7 +32,6 @@ AuthenticationRouter.post('/Hash', (req, res, next) => {
         Assert.ifError(err);
         var DB = client.db(AuthenticationDatabaseName);
         var collection = DB.collection('allowedhashes');
-        console.log(req.body);
         if(req.body.KEYWORD == CalculatedKeyWord)
         {
             collection.insert({hash:req.body.ASSHASH}, (err,data) => {
@@ -57,13 +56,14 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
             console.log(data);
             var ASSHASH = req.body.ASSHASH;
             var y = false;
-            for(x in data)
+            for(var i = 0; i < data.length; i++)
             {
-                if(x == ASSHASH)
+                if(data[i] == ASSHASH)
                 {
                     y = true;
                 }
             }
+            console.log(y);
             if(y)
             {
                 res.send(CalculatedKeyWord);
@@ -94,13 +94,14 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
         ahcollection.find({},{_id:0}).toArray((err,data) => {
             console.log(data);
             var y = false;
-            for(x in data)
+            for(var i = 0; i < data.length; i++)
             {
-                if(x == req.body.ASSHASH)
+                if(data[i] == ASSHASH)
                 {
                     y = true;
                 }
             }
+            console.log(y);
             if(req.body.KEYWORD == CalculatedKeyWord && y) 
             {
                 collection.insert(req.body.APPHASH, (err, data) => {
