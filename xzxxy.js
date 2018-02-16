@@ -56,7 +56,7 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
         collection.find({name:"hashesArray"},{_id:0,name:0,hashes:1}, (err,data) => {
             var ASSHASH = req.body.ASSHASH;
             var y = false;
-            foreach(x in data)
+            for(x in data)
             {
                 if(x == ASSHASH)
                 {
@@ -92,7 +92,7 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
         var ahcollection = db.collection('allowedhashes');
         ahcollection.find({name:"hashesArray"},{_id:0,name:0,hashes:1}, (err,data) => {
             var y = false;
-            foreach(x in data)
+            for(x in data)
             {
                 if(x == req.body.ASSHASH)
                 {
