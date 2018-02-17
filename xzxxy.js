@@ -11,10 +11,10 @@ const Keyword = process.env.KEYWORD;
 var CalculatedKeyWord;
 const ListenPort = process.env.PORT || 3000;
 // DBPATH set in enviroment variables
-const AuthenticationDatabasePath = process.env.MONGODB_PATH_AUTH;
+const AuthenticationDatabasePath = process.env.MONGODB_PATH;
 const AuthDatabase = 'xzxxy-auth';
 // collections : users, admins, allowedhashes
-const DatabasePath = process.env.MONGODB_PATH_DB;
+const DatabasePath = process.env.MONGODB_PATH;
 const DatabaseName = 'xzxxy-database';
 // collections - for every class there's one
 
@@ -30,85 +30,102 @@ AuthenticationRouter.get('/WriteKeyword', (req, res, next) => {
 });
 AuthenticationRouter.post('/Hash', (req, res, next) => {
     authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
+        if(err)
+        {
+            res.send('Application could not connection to the database!');
+            Assert.ifError(err);
+        }
         var DB = client.db(AuthDatabase);
         var collection = DB.collection('allowedhashes');
-        if(req.body.KEYWORD == CalculatedKeyWord)
-        {
-            collection.insert({hash:req.body.ASSHASH}, (err,data) => {
-                res.send('Successfully added the hash to database!');
-            });
-        }
-        else
-        {
-            res.send('Could not add the hash to database!');
-        }
-        client.close();
+        var acollection = DB.collection('admins');
+        acollection.findOne({user:req.body.APPHASH},(err,users) => {
+            if(users.user === req.body.APPHASH && CalculatedKeyWord == req.body.KEYWORD)
+            {
+                collection.findOne({}, (err, data) => {
+                    if(err)
+                    {
+                        res.send('An error occured while reading the allowedhashes database!');
+                        Assert.ifError(err);
+                    }
+                    if(data != null && data.hash === req.body.ASSHASH)
+                    {
+                        res.send('The hash is already in the database!');
+                    }
+                    else
+                    {
+                        collection.insertOne({hash:req.body.ASSHASH}, err => {
+                            if(err)
+                            {
+                                res.send('An error occured while inserting the new hash!');
+                                Assert.ifError(err);
+                            }
+                            res.send('Successfully added the hash to database!');
+                        });
+                    }
+                    client.close();
+                });
+            }
+            else
+            {
+                if(users.user !== req.body.APPHASH || users.user != req.body.APPHASH)
+                {
+                    res.send('User that is trying to submit is not registered/admin!');
+                }
+                else if(CalculatedKeyWord !== req.body.KEYWORD || CalculatedKeyWord != req.body.KEYWORD)
+                {
+                    res.send('The keyword you\'re trying to send is not correct!');
+                }
+                else
+                {
+                    res.send('Could not add the hash to database!');
+                }
+                client.close();
+            }
+        });
     });
 });
 AuthenticationRouter.post('/FirstStep', (req, res, next) => {
     authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         var DB = client.db(AuthDatabase);
         var collection = DB.collection('allowedhashes');
-        console.log(req.body);
-        collection.find({},{_id:0}).toArray((err,data) => {
-            var y = false;
+        collection.findOne({hash:req.body.ASSHASH}, (err,data) => {
             console.log(data);
-            for(var i = 0; i < data.length; i++)
-            {
-                if(data[i].hash == req.body.ASSHASH)
-                {
-                    y = true;
-                }
-            }
-            if(y)
+            if(data.hash === req.body.ASSHASH)
             {
                 var ucollection = DB.collection('users');
                 var acollection = DB.collection('admins');
-                var exists = false;
-                var type = "";
-                ucollection.find({},{_id:0}).toArray((err,users) => {
-                    if(users != undefined)
+                ucollection.findOne({user:req.body.APPHASH}, (err,user) => {
+                    if(user.user === req.body.APPHASH)
                     {
-                        console.log(users);
-                        for(var i = 0; i < users.length; i++)
+                        console.log(user);
+                        res.send("You already exist as an user!");
+                    }
+                    else
+                    {
+                        acollection.findOne({user:req.body.APPHASH},{_id:0})
                         {
-                            if(users[i].user == req.body.APPHASH)
-                            {
-                                exists = true;
-                                type = "user";
-                            }   
-                        }
+                            (err,users) => {
+                                if(users === req.body.APPHASH)
+                                {
+                                    console.log(users);
+                                    res.send("You already exist as an admin!");
+
+                                }
+                                else
+                                {
+                                    res.send(CalculatedKeyWord);
+                                }
+                            };
+                        } 
                     }
                 });
-                acollection.find({},{_id:0}).toArray((err,users) => {
-                    if(users != undefined)
-                    {
-                        console.log(users);
-                        for(var i = 0; i < users.length; i++)
-                        {
-                            if(users[i].user == req.body.APPHASH)
-                            {
-                                exists = true;
-                                type = "admin";
-                            }  
-                        }
-                    }
-                });
-                if(exists)
-                {
-                    res.send("You already exist as a " + type + "!");
-                }
-                else
-                {
-                    res.send(CalculatedKeyWord);
-                }
             }
             else
             {
                 res.send("Registration denied!");
             }
+            client.close();
         });
-        client.close();
     });
 });
 AuthenticationRouter.post('/SecondStep', (req, res, next) => {
@@ -270,7 +287,3 @@ Aplication.listen(ListenPort, '0.0.0.0', err => {
     console.log('This session has the keyword set to : ' + CalculatedKeyWord);
     console.log('Server up and started on port ' + ListenPort);
 });
-
-
-
-

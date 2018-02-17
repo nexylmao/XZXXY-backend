@@ -4,7 +4,7 @@
   "description": "Backend application, handles database-ing and authentication for the application frontend",
   "main": "xzxxy.js",
   "scripts": {
-    "start": "node xzxxy.js",
+    "start": "nodemon xzxxy.js",
     "test": "xo"
   },
   "repository": {
@@ -28,6 +28,7 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "mongodb": "^3.0.2",
+    "nodemon": "^1.15.0",
     "xo": "^0.18.2"
   }
 }
