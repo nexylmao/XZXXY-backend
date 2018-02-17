@@ -123,7 +123,7 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
         {
             collection = DB.collection('users');
         }
-        var collection = DB.collection('allowedhashes');
+        var ahcollection = DB.collection('allowedhashes');
         ahcollection.find({},{_id:0}).toArray((err,data) => {
             var y = false;
             for(var i = 0; i < data.length; i++)
