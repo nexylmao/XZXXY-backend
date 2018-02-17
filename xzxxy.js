@@ -136,7 +136,6 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
             if(req.body.KEYWORD == CalculatedKeyWord && y) 
             {
                 collection.insert({user:req.body.APPHASH}, (err, data) => {
-                    Assert.equal(null, err);
                     res.send('You have been successfully registered!');
                 });
             }
@@ -173,7 +172,6 @@ DatabaseRouter.get('/:userid/:collection', (req, res, next) => {
         if(exists)
         {
             databaseClient.connect(DatabasePath, (err, client) => {
-                Assert.equal(null, err);
                 var DB = client.db(DatabaseName);
                 var collection = DB.collection(req.params.collection);
                 collection.find({},{_id:0}).toArray((err, data) => {
@@ -207,7 +205,6 @@ DatabaseRouter.post('/:userid/collection', (req, res, next) => {
         if(exists)
         {
             databaseClient.connect(DatabasePath, (err, client) => {
-                Assert.equal(null, err);
                 var DB = client.db(DatabaseName);
                 var collection = DB.collection(req.params.collection);
                 collection.insert(req.body, (err, data) => {
@@ -241,7 +238,6 @@ DatabaseRouter.delete('/:userid/collection', (req, res, next) => {
         if(exists)
         {
             databaseClient.connect(DatabasePath, (err, client) => {
-                Assert.equal(null, err);
                 var DB = client.db(DatabaseName);
                 var collection = DB.collection(req.params.collection);
                 collection.remove({}, (err, data) => {
