@@ -15,10 +15,6 @@ const AuthenticationDatabasePath = process.env.MONGODB_PATH_AUTH;
 // collections : users, admins, allowedhashes
 const DatabasePath = process.env.MONGODB_PATH_DB;
 // collections - for every class there's one
-var options = {
-    server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
-    replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
-  };
 
 Aplication.use(Parser.urlencoded({
     extended: true
@@ -31,7 +27,7 @@ AuthenticationRouter.get('/WriteKeyword', (req, res, next) => {
     res.send('Wrote the keyword to server console!');
 });
 AuthenticationRouter.post('/Hash', (req, res, next) => {
-    authenticationClient.connect(AuthenticationDatabasePath, options, (err, client) => {
+    authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
         var DB = client.database('xzxxy-auth');
         var collection = DB.collection('allowedhashes');
@@ -49,7 +45,7 @@ AuthenticationRouter.post('/Hash', (req, res, next) => {
     });
 });
 AuthenticationRouter.post('/FirstStep', (req, res, next) => {
-    authenticationClient.connect(AuthenticationDatabasePath, options , (err, client) => {
+    authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
         var DB = client.database('xzxxy-auth');
         var collection = DB.collection('allowedhashes');
@@ -119,7 +115,7 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
     });
 });
 AuthenticationRouter.post('/SecondStep', (req, res, next) => {
-    authenticationClient.connect(AuthenticationDatabasePath, options , (err, client) => {
+    authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
         var collection;
         var DB = client.database('xzxxy-auth');
@@ -161,7 +157,7 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
 });
 // DATABASE ROUTER
 DatabaseRouter.get('/:userid/:collection', (req, res, next) => {
-    authenticationClient.connect(AuthenticationDatabasePath, options , (err, client) => {
+    authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
         var exists = false;
         var DB = client.database('xzxxy-auth');
@@ -182,7 +178,7 @@ DatabaseRouter.get('/:userid/:collection', (req, res, next) => {
         client.close();
         if(exists)
         {
-            databaseClient.connect(DatabasePath, options , (err, client) => {
+            databaseClient.connect(DatabasePath, (err, client) => {
                 Assert.ifError(err);
                 var DB = client.data('xzxxy-database');
                 var collection = DB.collection(req.params.collection);
@@ -196,7 +192,7 @@ DatabaseRouter.get('/:userid/:collection', (req, res, next) => {
 });
 
 DatabaseRouter.post('/:userid/collection', (req, res, next) => {
-    authenticationClient.connect(AuthenticationDatabasePath, options , (err, client) => {
+    authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
         var exists = false;
         var DB = client.database('xzxxy-auth');
@@ -217,7 +213,7 @@ DatabaseRouter.post('/:userid/collection', (req, res, next) => {
         client.close();
         if(exists)
         {
-            databaseClient.connect(DatabasePath, options , (err, client) => {
+            databaseClient.connect(DatabasePath, (err, client) => {
                 Assert.equal(null, err);
                 var DB = client.database('xzxxy-database');
                 var collection = DB.collection(req.params.collection);
@@ -231,7 +227,7 @@ DatabaseRouter.post('/:userid/collection', (req, res, next) => {
 });
 
 DatabaseRouter.delete('/:userid/collection', (req, res, next) => {
-    authenticationClient.connect(AuthenticationDatabasePath, options , (err, client) => {
+    authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
         var exists = false;
         var DB = client.database('xzxxy-auth');
@@ -252,7 +248,7 @@ DatabaseRouter.delete('/:userid/collection', (req, res, next) => {
         client.close();
         if(exists)
         {
-            databaseClient.connect(DatabasePath, options , (err, client) => {
+            databaseClient.connect(DatabasePath, (err, client) => {
                 Assert.equal(null, err);
                 var DB = client.database('xzxxy-database');
                 var collection = DB.collection(req.params.collection);
