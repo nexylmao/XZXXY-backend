@@ -29,8 +29,7 @@ AuthenticationRouter.get('/WriteKeyword', (req, res, next) => {
 AuthenticationRouter.post('/Hash', (req, res, next) => {
     authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
-        var DB = client.database('xzxxy-auth');
-        var collection = DB.collection('allowedhashes');
+        var collection = client.collection('allowedhashes');
         if(req.body.KEYWORD == CalculatedKeyWord)
         {
             collection.insert({hash:req.body.ASSHASH}, (err,data) => {
@@ -47,8 +46,7 @@ AuthenticationRouter.post('/Hash', (req, res, next) => {
 AuthenticationRouter.post('/FirstStep', (req, res, next) => {
     authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
-        var DB = client.database('xzxxy-auth');
-        var collection = DB.collection('allowedhashes');
+        var collection = client.collection('allowedhashes');
         console.log(req.body);
         collection.find({},{_id:0}).toArray((err,data) => {
             Assert.ifError(err);
@@ -118,16 +116,15 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
     authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
         var collection;
-        var DB = client.database('xzxxy-auth');
         if(req.body.ADMIN == true)
         {
-            collection = DB.collection('admins');
+            collection = client.collection('admins');
         }
         else
         {
-            collection = DB.collection('users');
+            collection = client.collection('users');
         }
-        var collection = DB.collection('allowedhashes');
+        var collection = client.collection('allowedhashes');
         ahcollection.find({},{_id:0}).toArray((err,data) => {
             Assert.ifError(err);
             var y = false;
@@ -160,9 +157,8 @@ DatabaseRouter.get('/:userid/:collection', (req, res, next) => {
     authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
         var exists = false;
-        var DB = client.database('xzxxy-auth');
-        var acollection = DB.collection('admins');
-        var ucollection = DB.collection('users');
+        var acollection = client.collection('admins');
+        var ucollection = client.collection('users');
         acollection.find({},{_id:0}).toArray((err, data) => {
             if(data.indexOf(req.params.userid) != -1)
             {
@@ -180,8 +176,7 @@ DatabaseRouter.get('/:userid/:collection', (req, res, next) => {
         {
             databaseClient.connect(DatabasePath, (err, client) => {
                 Assert.ifError(err);
-                var DB = client.data('xzxxy-database');
-                var collection = DB.collection(req.params.collection);
+                var collection = client.collection(req.params.collection);
                 collection.find({},{_id:0}).toArray((err, data) => {
                     res.send(data);
                     client.close();
@@ -195,9 +190,8 @@ DatabaseRouter.post('/:userid/collection', (req, res, next) => {
     authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
         var exists = false;
-        var DB = client.database('xzxxy-auth');
-        var acollection = DB.collection('admins');
-        var ucollection = DB.collection('users');
+        var acollection = client.collection('admins');
+        var ucollection = client.collection('users');
         acollection.find({},{_id:0}).toArray((err, data) => {
             if(data.indexOf(req.params.userid) != -1)
             {
@@ -215,8 +209,7 @@ DatabaseRouter.post('/:userid/collection', (req, res, next) => {
         {
             databaseClient.connect(DatabasePath, (err, client) => {
                 Assert.equal(null, err);
-                var DB = client.database('xzxxy-database');
-                var collection = DB.collection(req.params.collection);
+                var collection = client.collection(req.params.collection);
                 collection.insert(req.body, (err, data) => {
                     res.send('Object successfully saved to database (' + req.params.collection + ')');
                 });
@@ -230,9 +223,8 @@ DatabaseRouter.delete('/:userid/collection', (req, res, next) => {
     authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
         Assert.ifError(err);
         var exists = false;
-        var DB = client.database('xzxxy-auth');
-        var acollection = DB.collection('admins');
-        var ucollection = DB.collection('users');
+        var acollection = client.collection('admins');
+        var ucollection = client.collection('users');
         acollection.find({},{_id:0}).toArray((err, data) => {
             if(data.indexOf(req.params.userid) != -1)
             {
@@ -250,8 +242,7 @@ DatabaseRouter.delete('/:userid/collection', (req, res, next) => {
         {
             databaseClient.connect(DatabasePath, (err, client) => {
                 Assert.equal(null, err);
-                var DB = client.database('xzxxy-database');
-                var collection = DB.collection(req.params.collection);
+                var collection = client.collection(req.params.collection);
                 collection.remove({}, (err, data) => {
                     res.send('Object successfully deleted everything in database (' + req.params.collection + ')');
                 });
