@@ -30,7 +30,7 @@ AuthenticationRouter.get('/WriteKeyword', (req, res, next) => {
 });
 AuthenticationRouter.post('/Hash', (req, res, next) => {
     authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
-        Assert.ifError(err);
+        Assert.equal(null, err);
         var DB = client.db(AuthDatabase);
         var collection = DB.collection('allowedhashes');
         if(req.body.KEYWORD == CalculatedKeyWord)
@@ -48,7 +48,7 @@ AuthenticationRouter.post('/Hash', (req, res, next) => {
 });
 AuthenticationRouter.post('/FirstStep', (req, res, next) => {
     authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
-        Assert.ifError(err);
+        Assert.equal(null, err);
         var DB = client.db(AuthDatabase);
         var collection = DB.collection('allowedhashes');
         console.log(req.body);
@@ -70,7 +70,7 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
                 var exists = false;
                 var type = "";
                 ucollection.find({},{_id:0}).toArray((err,users) => {
-                    Assert.ifError(err);
+                    Assert.equal(null, err);
                     if(users != undefined)
                     {
                         console.log(users);
@@ -85,7 +85,7 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
                     }
                 });
                 acollection.find({},{_id:0}).toArray((err,users) => {
-                    Assert.ifError(err);
+                    Assert.equal(null, err);
                     if(users != undefined)
                     {
                         console.log(users);
@@ -118,7 +118,7 @@ AuthenticationRouter.post('/FirstStep', (req, res, next) => {
 });
 AuthenticationRouter.post('/SecondStep', (req, res, next) => {
     authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
-        Assert.ifError(err);
+        Assert.equal(null, err);
         var DB = client.db(AuthDatabase);
         var collection;
         if(req.body.ADMIN == true)
@@ -143,7 +143,7 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
             if(req.body.KEYWORD == CalculatedKeyWord && y) 
             {
                 collection.insert({user:req.body.APPHASH}, (err, data) => {
-                    Assert.ifError(err);
+                    Assert.equal(null, err);
                     res.send('You have been successfully registered!');
                 });
             }
@@ -160,7 +160,7 @@ AuthenticationRouter.post('/SecondStep', (req, res, next) => {
 // DATABASE ROUTER
 DatabaseRouter.get('/:userid/:collection', (req, res, next) => {
     authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
-        Assert.ifError(err);
+        Assert.equal(null, err);
         var exists = false;
         var DB = client.db(AuthDatabase);
         var acollection = DB.collection('admins');
@@ -181,7 +181,7 @@ DatabaseRouter.get('/:userid/:collection', (req, res, next) => {
         if(exists)
         {
             databaseClient.connect(DatabasePath, (err, client) => {
-                Assert.ifError(err);
+                Assert.equal(null, err);
                 var DB = client.db(DatabaseName);
                 var collection = DB.collection(req.params.collection);
                 collection.find({},{_id:0}).toArray((err, data) => {
@@ -195,7 +195,7 @@ DatabaseRouter.get('/:userid/:collection', (req, res, next) => {
 
 DatabaseRouter.post('/:userid/collection', (req, res, next) => {
     authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
-        Assert.ifError(err);
+        Assert.equal(null, err);
         var exists = false;
         var DB = client.db(AuthDatabase);
         var acollection = DB.collection('admins');
@@ -230,7 +230,7 @@ DatabaseRouter.post('/:userid/collection', (req, res, next) => {
 
 DatabaseRouter.delete('/:userid/collection', (req, res, next) => {
     authenticationClient.connect(AuthenticationDatabasePath, (err, client) => {
-        Assert.ifError(err);
+        Assert.equal(null, err);
         var exists = false;
         var DB = client.db(AuthDatabase);
         var acollection = DB.collection('admins');
