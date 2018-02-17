@@ -38,47 +38,61 @@ AuthenticationRouter.post('/Hash', (req, res, next) => {
         var DB = client.db(AuthDatabase);
         var collection = DB.collection('allowedhashes');
         var acollection = DB.collection('admins');
-        acollection.findOne({user:req.body.APPHASH},(err,users) => {
-            if(users.user === req.body.APPHASH && CalculatedKeyWord == req.body.KEYWORD)
+        acollection.findOne({user:req.body.APPHASH}, (err,users) => {
+            if(err)
             {
-                collection.findOne({}, (err, data) => {
-                    if(err)
-                    {
-                        res.send('An error occured while reading the allowedhashes database!');
-                        Assert.ifError(err);
-                    }
-                    if(data != null && data.hash === req.body.ASSHASH)
-                    {
-                        res.send('The hash is already in the database!');
-                    }
-                    else
-                    {
-                        collection.insertOne({hash:req.body.ASSHASH}, err => {
-                            if(err)
-                            {
-                                res.send('An error occured while inserting the new hash!');
-                                Assert.ifError(err);
-                            }
-                            res.send('Successfully added the hash to database!');
-                        });
-                    }
-                    client.close();
-                });
+                res.send('An error occured while reading the admins database!');
+                Assert.ifError(err);
             }
-            else
+            try
             {
-                if(users.user !== req.body.APPHASH || users.user != req.body.APPHASH)
+                if(users.user === req.body.APPHASH && CalculatedKeyWord == req.body.KEYWORD)
                 {
-                    res.send('User that is trying to submit is not registered/admin!');
-                }
-                else if(CalculatedKeyWord !== req.body.KEYWORD || CalculatedKeyWord != req.body.KEYWORD)
-                {
-                    res.send('The keyword you\'re trying to send is not correct!');
+                    collection.find({hash:req.body.ASSHASH}).toArray((err, data) => {
+                        if(err)
+                        {
+                            res.send('An error occured while reading the allowedhashes database!');
+                            Assert.ifError(err);
+                        }
+                        console.log(data);
+                        console.log(typeof data);
+                        try
+                        {
+                            if(data[0].hash === req.body.ASSHASH)
+                            {
+                                res.send('The hash is already in the database!');
+                            }
+                        }
+                        catch (err)
+                        {
+                            collection.insertOne({hash:req.body.ASSHASH}, err => {
+                                if(err)
+                                {
+                                    res.send('An error occured while inserting the new hash!');
+                                    Assert.ifError(err);
+                                }
+                                res.send('Successfully added the hash to database!');
+                            });
+                        }
+                        client.close();
+                    });
                 }
                 else
                 {
-                    res.send('Could not add the hash to database!');
+                    if(CalculatedKeyWord !== req.body.KEYWORD || CalculatedKeyWord != req.body.KEYWORD)
+                    {
+                        res.send('The keyword you\'re trying to send is not correct!');
+                    }
+                    else
+                    {
+                        res.send('Could not add the hash to database!');
+                    }
+                    client.close();
                 }
+            }
+            catch (err)
+            {
+                res.send('User that is trying to submit is not registered/admin!');
                 client.close();
             }
         });
