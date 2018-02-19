@@ -525,15 +525,13 @@ DatabaseRouter.delete('/:userid/collection', (req, res) =>
 Aplication.use('/XZXXY-AUTH/', AuthenticationRouter);
 Aplication.use('/XZXXY-DATABASE/', DatabaseRouter);
 
-Aplication.use((err, req, res) =>
-{
-	const msg = err.message;
-	const error = err.error || err;
-	const status = err.status || 500;
-	res.status(status).json({
-        message: msg,
-        error: error
+Aplication.use((err, req, res, next) => {
+	res.status(err.status || 500).json({
+		message: err.message,
+		error: err.error,
+		status: err.status
 	});
+	next();
 });
 
 Aplication.listen(ListenPort, '0.0.0.0', err =>
