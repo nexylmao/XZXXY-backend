@@ -200,42 +200,101 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 			Assert.ifError(err);
 		}
 		const DB = client.db(AuthDatabase);
-		const ahcollection = DB.collection('allowedhashes');
-		let collection;
-		if (req.body.ADMIN === true)
+		const collection = DB.collection('allowedhashes');
+		collection.findOne({hash: req.body.ASSHASH},
+		(err, data) =>
 		{
-			collection = DB.collection('admins');
-		}
-		else
-		{
-			collection = DB.collection('users');
-		}
-		ahcollection.findOne({hash: req.body.ASSHASH},
-			(err, data) =>
+			if (err)
 			{
-				if (err)
+				res.send('There was an error while querying the hashes database!');
+				Assert.ifError(err);
+			}
+			try
+			{
+				if (data.hash === req.body.ASSHASH)
 				{
-					res.send('There was an error while querying the hash!');
-					Assert.ifError(err);
-				}
-				try
-				{
-					if (data.hash === req.body.ASSHASH && req.body.KEYWORD === CalculatedKeyWord)
+					const ucollection = DB.collection('users');
+					ucollection.findOne({user: req.body.APPHASH},
+					(err, data) =>
 					{
-						collection.insert({user: req.body.APPHASH}, () =>
+						if (err)
 						{
-							res.send('You have been successfully registered!');
-						});
-					}
+							res.send('Error showed up while searching for the user!');
+							Assert.ifError(err);
+						}
+						try
+						{
+							if (data.user === req.body.APPHASH)
+							{
+								res.send('You already exist as an user!');
+								client.close();
+							}
+						}
+						catch (err)
+						{
+							const acollection = DB.collection('admins');
+							acollection.findOne({user: req.body.APPHASH}, {_id: 0},
+								(err, data) =>
+								{
+									if (err)
+									{
+										res.send('Error showed up while searching for the admin!');
+										Assert.ifError();
+									}
+									try
+									{
+										if (data.user === req.body.APPHASH)
+										{
+											res.send('You already exist as an admin!');
+											client.close();
+										}
+									}
+									catch (err)
+									{
+										if (data.hash === req.body.ASSHASH && req.body.KEYWORD === CalculatedKeyWord)
+										{
+											if (req.body.ADMIN === true)
+											{
+												DB.collection('admins').insert({user: req.body.APPHASH}, err =>
+												{
+													if (err)
+													{
+														res.send('Error occured while inserting the data!');
+														Assert.ifError(err);
+													}
+													res.send('You have been successfully registered as admin!');
+												});
+											}
+											else
+											{
+												DB.collection('users').insert({user: req.body.APPHASH}, err =>
+												{
+													if (err)
+													{
+														res.send('Error occured while inserting the data!');
+														Assert.ifError(err);
+													}
+													res.send('You have been successfully registered as users!');
+												});
+											}
+										}
+										client.close();
+									}
+								}
+							);
+						}
+					});
 				}
-				catch (err)
-				{
-					res.send('Registration denied!');
-				}
-				CalculatedKeyWord = Math.floor((Math.random() * 100000000) + 1) + Keyword + Math.floor((Math.random() * 100000000) + 1);
-				console.log('This session has the keyword set to : ' + CalculatedKeyWord);
+			}
+			catch (err)
+			{
+				res.send('Registration denied!');
 				client.close();
-			});
+			}
+			CalculatedKeyWord = Math.floor((Math.random() * 100000000) + 1) + Keyword + Math.floor((Math.random() * 100000000) + 1);
+			console.log('This session has the keyword set to : ' + CalculatedKeyWord);
+			client.close();
+		});
 	});
 });
 // DATABASE ROUTER
@@ -525,7 +584,8 @@ DatabaseRouter.delete('/:userid/collection', (req, res) =>
 Aplication.use('/XZXXY-AUTH/', AuthenticationRouter);
 Aplication.use('/XZXXY-DATABASE/', DatabaseRouter);
 
-Aplication.use((err, req, res, next) => {
+Aplication.use((err, req, res, next) =>
+{
 	res.status(err.status || 500).json({
 		message: err.message,
 		error: err.error,
