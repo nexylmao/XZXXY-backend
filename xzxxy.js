@@ -161,7 +161,7 @@ AuthenticationRouter.post('/FirstStep', (req, res) =>
 									if (err)
 									{
 										res.send('Error showed up while searching for the admin!');
-										Assert.ifError();
+										Assert.ifError(err);
 									}
 									try
 									{
@@ -240,7 +240,7 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 									if (err)
 									{
 										res.send('Error showed up while searching for the admin!');
-										Assert.ifError();
+										Assert.ifError(err);
 									}
 									try
 									{
