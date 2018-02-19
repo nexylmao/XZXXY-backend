@@ -4,7 +4,7 @@
   "description": "Backend application, handles database-ing and authentication for the application frontend",
   "main": "xzxxy.js",
   "scripts": {
-    "start": "nodemon xzxxy.js",
+    "start": "node xzxxy.js",
     "test": "xo"
   },
   "repository": {
