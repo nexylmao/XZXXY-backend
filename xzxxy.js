@@ -66,7 +66,6 @@ AuthenticationRouter.post('/Hash', (req, res) =>
 							if (data.hash === req.body.ASSHASH)
 							{
 								res.send('The hash is already in the database!');
-								client.close();
 							}
 						}
 						catch (err)
@@ -79,7 +78,6 @@ AuthenticationRouter.post('/Hash', (req, res) =>
 									Assert.ifError(err);
 								}
 								res.send('Successfully added the hash to database!');
-								client.close();
 							});
 						}
 					});
@@ -89,12 +87,10 @@ AuthenticationRouter.post('/Hash', (req, res) =>
 					if (CalculatedKeyWord !== req.body.KEYWORD || CalculatedKeyWord !== req.body.KEYWORD)
 					{
 						res.send('The keyword you\'re trying to send is not correct!');
-						client.close();
 					}
 					else
 					{
 						res.send('Could not add the hash to database!');
-						client.close();
 					}
 				}
 			}
@@ -103,12 +99,10 @@ AuthenticationRouter.post('/Hash', (req, res) =>
 				if (CalculatedKeyWord !== req.body.KEYWORD || CalculatedKeyWord !== req.body.KEYWORD)
 				{
 					res.send('The keyword you\'re trying to send is not correct!');
-					client.close();
 				}
 				else
 				{
 					res.send('User that is trying to submit is not registered/admin!');
-					client.close();
 				}
 			}
 		});
@@ -152,13 +146,12 @@ AuthenticationRouter.post('/FirstStep', (req, res) =>
 							if (data.user === req.body.APPHASH)
 							{
 								res.send('You already exist as an user!');
-								client.close();
 							}
 						}
 						catch (err)
 						{
 							const acollection = DB.collection('admins');
-							acollection.findOne({user: req.body.APPHASH}, {_id: 0},
+							acollection.findOne({user: req.body.APPHASH},
 								(err, data) =>
 								{
 									if (err)
@@ -171,13 +164,11 @@ AuthenticationRouter.post('/FirstStep', (req, res) =>
 										if (data.user === req.body.APPHASH)
 										{
 											res.send('You already exist as an admin!');
-											client.close();
 										}
 									}
 									catch (err)
 									{
 										res.send(CalculatedKeyWord);
-										client.close();
 									}
 								}
 							);
@@ -188,7 +179,6 @@ AuthenticationRouter.post('/FirstStep', (req, res) =>
 			catch (err)
 			{
 				res.send('Registration denied!');
-				client.close();
 			}
 		});
 	});
@@ -204,8 +194,7 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 		}
 		const DB = client.db(AuthDatabase);
 		const collection = DB.collection('allowedhashes');
-		collection.findOne({hash: req.body.ASSHASH},
-		(err, data) =>
+		collection.findOne({hash: req.body.ASSHASH}, (err, hash) =>
 		{
 			if (err)
 			{
@@ -214,12 +203,10 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 			}
 			try
 			{
-				let foundHash = data.hash;
-				if (data.hash === req.body.ASSHASH)
+				if (hash.hash === req.body.ASSHASH)
 				{
 					const ucollection = DB.collection('users');
-					ucollection.findOne({user: req.body.APPHASH},
-					(err, data) =>
+					ucollection.findOne({user: req.body.APPHASH}, (err, data) =>
 					{
 						if (err)
 						{
@@ -231,13 +218,12 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 							if (data.user === req.body.APPHASH)
 							{
 								res.send('You already exist as an user!');
-								client.close();
 							}
 						}
 						catch (err)
 						{
 							const acollection = DB.collection('admins');
-							acollection.findOne({user: req.body.APPHASH}, {_id: 0},
+							acollection.findOne({user: req.body.APPHASH},
 								(err, data) =>
 								{
 									if (err)
@@ -247,19 +233,20 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 									}
 									try
 									{
-										if (data.user === req.body.APPHASH)
+										if (data.user === req.body.APHASH)
 										{
 											res.send('You already exist as an admin!');
-											client.close();
 										}
 									}
 									catch (err)
 									{
-										if (foundHash === req.body.ASSHASH && req.body.KEYWORD === CalculatedKeyWord)
+										if (hash.hash === req.body.ASSHASH && req.body.KEYWORD === CalculatedKeyWord)
 										{
 											if (req.body.ADMIN === true)
 											{
-												DB.collection('admins').insert({user: req.body.APPHASH}, err =>
+												let collection = DB.collection('admins');
+												collection.insertOne({user: req.body.APPHASH},
+												err =>
 												{
 													if (err)
 													{
@@ -267,12 +254,14 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 														Assert.ifError(err);
 													}
 													res.send('You have been successfully registered as admin!');
-													client.close();
 												});
+												client.close();
 											}
 											else
 											{
-												DB.collection('users').insert({user: req.body.APPHASH}, err =>
+												let collection = DB.collection('users');
+												collection.insertOne({user: req.body.APPHASH},
+												err =>
 												{
 													if (err)
 													{
@@ -280,8 +269,21 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 														Assert.ifError(err);
 													}
 													res.send('You have been successfully registered as users!');
-													client.close();
 												});
+												client.close();
+											}
+											CalculatedKeyWord = Math.floor((Math.random() * 100000000) + 1) + Keyword + Math.floor((Math.random() * 100000000) + 1);
+											console.log('This session has the keyword set to : ' + CalculatedKeyWord);
+										}
+										else
+										{
+											if(hash.hash !== req.body.ASSHASH)
+											{
+												res.send('Registration denied!');
+											}
+											else if(CalculatedKeyWord !== req.body.KEYWORD)
+											{
+												res.send('The keyword you\'re trying to send is not correct!');
 											}
 										}
 									}
@@ -294,10 +296,7 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 			catch (err)
 			{
 				res.send('Registration denied!');
-				client.close();
 			}
-			CalculatedKeyWord = Math.floor((Math.random() * 100000000) + 1) + Keyword + Math.floor((Math.random() * 100000000) + 1);
-			console.log('This session has the keyword set to : ' + CalculatedKeyWord);
 		});
 	});
 });
