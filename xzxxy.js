@@ -66,6 +66,7 @@ AuthenticationRouter.post('/Hash', (req, res) =>
 							if (data.hash === req.body.ASSHASH)
 							{
 								res.send('The hash is already in the database!');
+								client.close();
 							}
 						}
 						catch (err)
@@ -88,10 +89,12 @@ AuthenticationRouter.post('/Hash', (req, res) =>
 					if (CalculatedKeyWord !== req.body.KEYWORD || CalculatedKeyWord !== req.body.KEYWORD)
 					{
 						res.send('The keyword you\'re trying to send is not correct!');
+						client.close();
 					}
 					else
 					{
 						res.send('Could not add the hash to database!');
+						client.close();
 					}
 				}
 			}
@@ -100,10 +103,12 @@ AuthenticationRouter.post('/Hash', (req, res) =>
 				if (CalculatedKeyWord !== req.body.KEYWORD || CalculatedKeyWord !== req.body.KEYWORD)
 				{
 					res.send('The keyword you\'re trying to send is not correct!');
+					client.close();
 				}
 				else
 				{
 					res.send('User that is trying to submit is not registered/admin!');
+					client.close();
 				}
 			}
 		});
@@ -147,6 +152,7 @@ AuthenticationRouter.post('/FirstStep', (req, res) =>
 							if (data.user === req.body.APPHASH)
 							{
 								res.send('You already exist as an user!');
+								client.close();
 							}
 						}
 						catch (err)
@@ -165,13 +171,14 @@ AuthenticationRouter.post('/FirstStep', (req, res) =>
 										if (data.user === req.body.APPHASH)
 										{
 											res.send('You already exist as an admin!');
+											client.close();
 										}
 									}
 									catch (err)
 									{
 										res.send(CalculatedKeyWord);
+										client.close();
 									}
-									client.close();
 								}
 							);
 						}
@@ -181,6 +188,7 @@ AuthenticationRouter.post('/FirstStep', (req, res) =>
 			catch (err)
 			{
 				res.send('Registration denied!');
+				client.close();
 			}
 		});
 	});
@@ -223,6 +231,7 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 							if (data.user === req.body.APPHASH)
 							{
 								res.send('You already exist as an user!');
+								client.close();
 							}
 						}
 						catch (err)
@@ -241,6 +250,7 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 										if (data.user === req.body.APPHASH)
 										{
 											res.send('You already exist as an admin!');
+											client.close();
 										}
 									}
 									catch (err)
@@ -284,6 +294,7 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 			catch (err)
 			{
 				res.send('Registration denied!');
+				client.close();
 			}
 			CalculatedKeyWord = Math.floor((Math.random() * 100000000) + 1) + Keyword + Math.floor((Math.random() * 100000000) + 1);
 			console.log('This session has the keyword set to : ' + CalculatedKeyWord);
@@ -376,6 +387,7 @@ DatabaseRouter.get('/:userid/:collection', (req, res) =>
 					catch (err)
 					{
 						res.send('The user doesn\' exist! Request denied!');
+						client.close();
 					}
 				});
 			}
@@ -468,6 +480,7 @@ DatabaseRouter.post('/:userid/collection', (req, res) =>
 					catch (err)
 					{
 						res.send('Couldn\'t find your user! Query denied!');
+						client.close();
 					}
 				});
 			}
@@ -561,6 +574,7 @@ DatabaseRouter.delete('/:userid/collection', (req, res) =>
 					catch (err)
 					{
 						res.send('Couldn\'t find your user! Query denied!');
+						client.close();
 					}
 				});
 			}
