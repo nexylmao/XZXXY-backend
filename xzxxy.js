@@ -78,9 +78,9 @@ AuthenticationRouter.post('/Hash', (req, res) =>
 									Assert.ifError(err);
 								}
 								res.send('Successfully added the hash to database!');
+								client.close();
 							});
 						}
-						client.close();
 					});
 				}
 				else
@@ -93,7 +93,6 @@ AuthenticationRouter.post('/Hash', (req, res) =>
 					{
 						res.send('Could not add the hash to database!');
 					}
-					client.close();
 				}
 			}
 			catch (err)
@@ -106,7 +105,6 @@ AuthenticationRouter.post('/Hash', (req, res) =>
 				{
 					res.send('User that is trying to submit is not registered/admin!');
 				}
-				client.close();
 			}
 		});
 	});
@@ -149,7 +147,6 @@ AuthenticationRouter.post('/FirstStep', (req, res) =>
 							if (data.user === req.body.APPHASH)
 							{
 								res.send('You already exist as an user!');
-								client.close();
 							}
 						}
 						catch (err)
@@ -168,14 +165,13 @@ AuthenticationRouter.post('/FirstStep', (req, res) =>
 										if (data.user === req.body.APPHASH)
 										{
 											res.send('You already exist as an admin!');
-											client.close();
 										}
 									}
 									catch (err)
 									{
 										res.send(CalculatedKeyWord);
-										client.close();
 									}
+									client.close();
 								}
 							);
 						}
@@ -185,7 +181,6 @@ AuthenticationRouter.post('/FirstStep', (req, res) =>
 			catch (err)
 			{
 				res.send('Registration denied!');
-				client.close();
 			}
 		});
 	});
@@ -228,7 +223,6 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 							if (data.user === req.body.APPHASH)
 							{
 								res.send('You already exist as an user!');
-								client.close();
 							}
 						}
 						catch (err)
@@ -247,7 +241,6 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 										if (data.user === req.body.APPHASH)
 										{
 											res.send('You already exist as an admin!');
-											client.close();
 										}
 									}
 									catch (err)
@@ -264,6 +257,7 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 														Assert.ifError(err);
 													}
 													res.send('You have been successfully registered as admin!');
+													client.close();
 												});
 											}
 											else
@@ -276,10 +270,10 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 														Assert.ifError(err);
 													}
 													res.send('You have been successfully registered as users!');
+													client.close();
 												});
 											}
 										}
-										client.close();
 									}
 								}
 							);
@@ -290,11 +284,9 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 			catch (err)
 			{
 				res.send('Registration denied!');
-				client.close();
 			}
 			CalculatedKeyWord = Math.floor((Math.random() * 100000000) + 1) + Keyword + Math.floor((Math.random() * 100000000) + 1);
 			console.log('This session has the keyword set to : ' + CalculatedKeyWord);
-			client.close();
 		});
 	});
 });
@@ -339,11 +331,12 @@ DatabaseRouter.get('/:userid/:collection', (req, res) =>
 								Assert.ifError(err);
 							}
 							res.send(data);
+							client.close();
 						});
-						client.close();
+						
 					});
 				}
-				client.close();
+				
 			}
 			catch (err)
 			{
@@ -375,16 +368,14 @@ DatabaseRouter.get('/:userid/:collection', (req, res) =>
 										Assert.ifError(err);
 									}
 									res.send(data);
+									client.close();
 								});
-								client.close();
 							});
 						}
-						client.close();
 					}
 					catch (err)
 					{
 						res.send('The user doesn\' exist! Request denied!');
-						client.close();
 					}
 				});
 			}
@@ -433,10 +424,9 @@ DatabaseRouter.post('/:userid/collection', (req, res) =>
 								Assert.ifError(err);
 							}
 							res.send('Object successfully saved to database (' + req.params.collection + ')');
+							client.close();
 						});
-						client.close();
 					});
-					client.close();
 				}
 			}
 			catch (err)
@@ -470,16 +460,14 @@ DatabaseRouter.post('/:userid/collection', (req, res) =>
 										Assert.ifError(err);
 									}
 									res.send('Object successfully saved to database (' + req.params.collection + ')');
+									client.close();
 								});
-								client.close();
 							});
 						}
-						client.close();
 					}
 					catch (err)
 					{
 						res.send('Couldn\'t find your user! Query denied!');
-						client.close();
 					}
 				});
 			}
@@ -528,11 +516,11 @@ DatabaseRouter.delete('/:userid/collection', (req, res) =>
 								Assert.ifError(err);
 							}
 							res.send('Object successfully deleted everything in database (' + req.params.collection + ')');
+							client.close();
 						});
-						client.close();
+						
 					});
 				}
-				client.close();
 			}
 			catch (err)
 			{
@@ -565,16 +553,14 @@ DatabaseRouter.delete('/:userid/collection', (req, res) =>
 										Assert.ifError(err);
 									}
 									res.send('Object successfully deleted everything in database (' + req.params.collection + ')');
+									client.close();
 								});
-								client.close();
 							});
 						}
-						client.close();
 					}
 					catch (err)
 					{
 						res.send('Couldn\'t find your user! Query denied!');
-						client.close();
 					}
 				});
 			}
