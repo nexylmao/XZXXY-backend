@@ -211,6 +211,7 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 			}
 			try
 			{
+				let foundHash = data.hash;
 				if (data.hash === req.body.ASSHASH)
 				{
 					const ucollection = DB.collection('users');
@@ -251,7 +252,7 @@ AuthenticationRouter.post('/SecondStep', (req, res) =>
 									}
 									catch (err)
 									{
-										if (data.hash === req.body.ASSHASH && req.body.KEYWORD === CalculatedKeyWord)
+										if (foundHash === req.body.ASSHASH && req.body.KEYWORD === CalculatedKeyWord)
 										{
 											if (req.body.ADMIN === true)
 											{
